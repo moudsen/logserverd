@@ -70,7 +70,9 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 	rtype := "error"
 
 	if ok && len(rtypes[0]) > 0 {
-		if rtypes[0]=="access" { rtype = "access" }
+		if rtypes[0] == "access" {
+			rtype = "access"
+		}
 	}
 
 	// Default is not to refresh the web page automatically. If set > 0, the page will refresh every X seconds.
@@ -88,7 +90,9 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 
 	if ok && len(nrlines[0]) > 0 {
 		maxlines, _ = strconv.Atoi(nrlines[0])
-		if maxlines < 5 { maxlines = 5 }
+		if maxlines < 5 {
+			maxlines = 5
+		}
 	}
 
 	// Default is to show oldest to newest log lines. This order can be reversed with this parameter.
@@ -98,7 +102,9 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 
 	if ok && len(reversed[0]) > 0 {
 		reverse, _ = strconv.Atoi(reversed[0])
-		if reverse > 1 { reverse = 1 }
+		if reverse > 1 {
+			reverse = 1
+		}
 	}
 
 	// Default is to show all log lines. When set to 1 only lines from our current ip address will be shown.
@@ -108,7 +114,9 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 
 	if ok && len(filtering[0]) > 0 {
 		filter, _ = strconv.Atoi(filtering[0])
-		if filter > 1 { filter = 1 }
+		if filter > 1 {
+			filter = 1
+		}
 	}
 
 	// Assemble the log name (full path)
@@ -345,6 +353,8 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 }
 
 func (service *Service) Manage() (string, error) {
+	// The deamon control section has been copied from an example of the Takama/daemon library. It's
+	// straightforward and install/using/removing the daemon is a breeze ...
 
 	usage := "Usage: logserverd install | remove | start | stop | status"
 
@@ -369,14 +379,23 @@ func (service *Service) Manage() (string, error) {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, os.Kill, syscall.SIGTERM)
 
+	// In case of misconfiguration (only /_log should be passed to this daemon), we present the user with
+	// possible options for /_log.
+
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/_log", handleAccessLog)
+
+	// Start the daemon in a child process. We can handle multiple requests in parallel from here.
 
 	go func() {
 		http.ListenAndServe(":7000", nil)
 	}()
 
+	// Log that our service is ready and listening on port 7000.
+
 	stdlog.Println("Service started, listening on port 7000")
+
+	// Wait for signals in an infinite loop. Note that we only accept a kill signal; no other signals are caught.
 
 	for {
 		select {
@@ -391,24 +410,36 @@ func (service *Service) Manage() (string, error) {
 }
 
 func init() {
+	// As we are a daemon we need to divert our standard and error output.
+
 	stdlog = log.New(os.Stdout, "", 0)
 	errlog = log.New(os.Stderr, "", 0)
 }
 
 func main() {
+	// Create a new daemon process.
+
 	srv, err := daemon.New(name, description)
+
+	// If we failed, report the error and halt.
 
 	if err != nil {
 		errlog.Println("Error: ", err)
 		os.Exit(1)
 	}
 
+	// Otherwise initialize and run the daemon service.
+
 	service := &Service{srv}
 	status, err := service.Manage()
+
+	// If initialization failed (short of memory for examples) report the error and halt.
 
 	if err != nil {
 		errlog.Println(status, "\nError: ", err)
 		os.Exit(1)
 	}
+
+	// Report our daemon status.
 	fmt.Println(status)
 }
