@@ -54,7 +54,7 @@ Use reverse proxy for Apache and protect the ```/_log directory``` (add to virtu
 # Notes
 I'm still developing (security related) and documenting the code. Updates to follow in the next weeks. If you want to use the current code, look for configurable items in the code before compiling/using.
 
-# Next steps/to-do
+# To-do
 - More configuraton of parameters/behaviour (port from command-line, ```/var/log/path/subdirectory```, fixate site)
 - Configuration file (/etc/logserverd.conf)
 - Enhance security (enforce allowed paths only, non-root daemon)
