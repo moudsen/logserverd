@@ -40,6 +40,9 @@ func handleIndex(w http.ResponseWriter, req *http.Request) {
 }
 
 func handleAccessLog(w http.ResponseWriter, req *http.Request) {
+	// Obtain the ip address from the requestor. As this routine likely sits behind a reverse proxy,
+	// first test for an ip in the header. Only if not there, use the RemoteAddr method.
+
 	ip := req.Header.Get("X-Real-Ip")
 	if ip == "" {
 		ip = req.Header.Get("X-Forwarded-For")
