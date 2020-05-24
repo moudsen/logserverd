@@ -10,31 +10,47 @@ The next challenge was to find a clear and secure way to access the webserver lo
 
 # Operations dependencies
 <ul>
-<li>For deamonizing I'm using a library from https://github.com/takama/deamon</li>
-<li>Logs are in a single logging directory</li>
-<li>Log name convention: <em>sitename-type.log</em> (site = example.com, type = <em>error</em> or <em>access</em></li>
+  <li>Commandline access (including root privileges)</li>
+  <li>GO compiler</li>
+  <li>For deamonizing I'm using a library from https://github.com/takama/deamon</li>
+  <li>Logs are in a single logging directory</li>
+  <li>Log name convention: <em>sitename-type.log</em> (site = example.com, type = <em>error</em> or <em>access</em></li>
+  <li>Apache reverse proxy modules</li>
 </ul>
 
 # Features
 <ul>
-<li>Last X lines of the logfile (defaults to 25 lines)</li>
-<li>Auto refresh (default is off)</li>
-<li>Reverse date/time (default is oldest to newerst)</li>
-<li>Filter based on our client IP address (default is to show all entries)</li>
-<li>Filter /_log and /_<em>icecoder alias</em></li>
+  <li>Last X lines of the logfile (defaults to 25 lines)</li>
+  <li>Auto refresh (default is off)</li>
+  <li>Reverse date/time (default is oldest to newerst)</li>
+  <li>Filter based on our client IP address (default is to show all entries)</li>
+  <li>Filter /_log and /_<em>icecoder alias</em></li>
 </ul>
 
-# Usage notes
+# Usage/installation notes
 <ul>
-<li>Compile the code "go build logserverd.go"</li>
-<li>Install the deamon to the sbin path with "sudo cp logserverd /usr/local/bin/sbin/logserverd"</li>
-<li>Install the daemon into services with "sudo logserverd install"</li>
-<li>Start the deamon with "sudo logserverd start"</li>
+  <li>Compile the code "go build logserverd.go"</li>
+  <li>Install the deamon to the sbin path with "sudo cp logserverd /usr/local/bin/sbin/logserverd"</li>
+  <li>Install the daemon into services with "sudo logserverd install"</li>
+  <li>Start the deamon with "sudo logserverd start"</li>
 </ul>
 <p>The service is now ready and waiting on port 7000</p>
 
 # Apache log server configuration (recommended setup)
-<p>...</p>
+<p>Use reverse proxy for Apache and protect the /_log directory (add to virtual host config or as general config file in case your wish to provide the service to multiple sites)</p>
+
+```
+  <Location /_log>
+    ProxyPass http://127.0.0.1:7000/_log
+    ProxyPassReverse http://127.0.0.1:7000/_log
+    AuthType Basic
+    AuthName "Authentication Required"
+    AuthUserFile "/var/pathto/filename.passwd"
+    Require valid-user
+    Order allow,deny
+    Allow from all
+</Location>
+```
 
 # Notes
 <p>I'm still developing (security related) and documenting the code. Updates to follow in the next weeks. If you want to use the current code, look for configurable items in the code before compiling/using.</p>
