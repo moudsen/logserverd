@@ -1,21 +1,21 @@
 # LOGSERVERD
-GOlang daemon for Linux to access Apache or NGINX log files from a browser
+GOlang daemon for Linux to access Apache or NGINX log files from a browser.
 
 # Introduction
-For websites I use PHP as my primary development language. As I won't always have direct access to my sites from protected environments I've developed a way to do everything browser based. The logserverd project is writte in GOlang and is meant to serve as a deamon on Linux for easy logfiles access either directly or via a reverse proxy.
+For websites I use PHP as my primary development language. As I won't always have direct access to my sites (specifically) from protected environments I've developed a way to do everything browser based. The logserverd project is meant to serve as a deamon on any Linux VPS for easy logfiles access either directly (or via a reverse proxy).
 
 ## My coding and debugging challenges
 For coding on the server I use <em>ICEcoder</em> (check out https://icecoder.net), a browser based code editor. I've yet to encounter an environment where this tool does not work ...!
 
-The next challenge was to find a clear and secure way to access the webserver log files in the /var/log path. After some tricks (remounting /var/log/httpd for example) I decided to go for a more structural and more clean option which is in my case I decided to use GOlang.
+The next challenge after phpMyAdmin and other tools the coding was to find an easy and secure way to access the webserver log files in the ```/var/log path```. After some tricks (remounting ```/var/log/httpd``` for example) I decided to go for a more structural and more clean option for which in my case I decided to use GOlang (multi platform/OS flavors, single binary).
 
-# Operations/dependencies
-- Commandline access (including root privileges)
+# Prerequisites
+- Commandline access (including root privileges, but also depends on access rights to ```/var/log``` as long as read-only right is granted)
 - GO compiler (recent version)
-- For deamonizing I'm using a library from https://github.com/takama/deamon
-- Apache or NGINX logs are in a single logging directory
-- Log name convention: <em>sitename-type.log</em> (site = example.com, type = <em>error</em> or <em>access</em>
-- Apache or NGINX reverse proxy modules (to serve as standard HTTPS)
+- For deamonizing the program I'm using a very nice and easy to use library from https://github.com/takama/deamon
+- Apache or NGINX logs are in a single logging directory (considering multi-path support at a later stage)
+- Log name convention: <em>sitename-type.log</em> (site = example.com, type = <em>error</em> or <em>access</em> (considering to make this configurable while guarding security level)
+- Apache or NGINX reverse proxy modules (to serve as standard HTTPS and to make the deamon part of the main site(s))
 
 # Features
 - Access or Error logs (refer to name convention); ```?type=<access|error>```
@@ -36,7 +36,7 @@ The next challenge was to find a clear and secure way to access the webserver lo
 The service is now ready and waiting on port 7000 ...
 
 # Apache log server configuration (recommended and secure setup)
-There are numerous examples on the internet how to setup access control for Apache and NGINX. I am using the following configuration for Apache to somehow secure the logging server access.
+There are numerous examples on the internet how to setup access control for Apache and NGINX. I am using the following configuration for Apache to somehow secure the logging server access, but feel free to adapt according to your needs.
 
 Configure the reverse proxy for Apache and protect the ```/_log directory``` (add configuration to any virtual host config or as general config file in case your wish to provide the service to multiple sites)
 
@@ -53,7 +53,7 @@ Configure the reverse proxy for Apache and protect the ```/_log directory``` (ad
 </Location>
 ```
 
-I'm assuming basic knowledge how to create the passwd file. Hint: ```htpasswd -c /pathto/filename.passwd myusername```.
+I'm assuming basic knowledge how to configure Apache and to create a passwd file. Hint: ```htpasswd -c /pathto/filename.passwd myusername```.
 
 # Notes
 I'm still developing (security related) and documenting the code. Updates to follow in the next weeks. If you want to use the current code, look for configurable items in the code before compiling/using.
