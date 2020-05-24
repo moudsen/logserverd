@@ -37,7 +37,7 @@
   <li>Install and enable the daemon into standard services with "sudo logserverd install"</li>
   <li>Start the deamon with "sudo logserverd start"</li>
 <ul>
-<p>The service is now ready and waiting on port 7000</p>
+<p>The service is now ready and waiting on port 7000 ...</p>
 
 # Apache log server configuration (recommended setup)
 <p>Use reverse proxy for Apache and protect the /_log directory (add to virtual host config or as general config file in case your wish to provide the service to multiple sites)</p>
