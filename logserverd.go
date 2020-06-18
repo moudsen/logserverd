@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/takama/daemon"
+//        "github.com/davecgh/go-spew/spew"
 )
 
 const (
@@ -48,9 +49,6 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 		ip = req.Header.Get("X-Forwarded-For")
 	}
 	if ip == "" {
-		ip = req.Header.Get("x-forwarded-for")
-	}
-	if ip == "" {
 		ip = req.RemoteAddr
 	}
 
@@ -65,7 +63,10 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 		if checkLogname(sites[0]) {
 			site = sites[0]
 		}
-	}
+	} else {
+            // Try to derive the host name from the proxy forwarder
+            site = req.Header.Get("X-Forwarded-Server")
+        }
 
 	// Default is to show the ERROR logile. Alternative is to show the ACCESS logfile.
 
@@ -154,6 +155,8 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintln(w, "</style>")
 	fmt.Fprintln(w, "</head>")
 	fmt.Fprintln(w, "<body>")
+
+        // spew.Fprintf(w,"%s",req.Header)
 
 	// Prepare our click items at the top of the page.
 
