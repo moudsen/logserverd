@@ -19,12 +19,15 @@ The next challenge after phpMyAdmin and other tools the coding was to find an ea
 
 # Features
 - Access or Error logs (refer to name convention); ```?type=<access|error>```
+- Read logfiles from other sites; ```&site=<server name>``` (*)
 - Last X lines of the logfile (defaults to 25 lines); ```&lines=<number>```
 - Auto refresh (default is off); ```&refresh=<seconds>```
 - Reverse date/time (default is oldest to newerst); ```&reverse=<0|1>```
 - Filter based on our client IP address (default is to show all entries); ```&filter="<0|1>```
 - Filter ```/_log``` and ```/_icecoder-alias```
 - Reverse proxy detection (correct source IP address for filtering the log file)
+
+(*) Site name characters may only contain a-z,0-9 or .-_ characters
 
 # Usage/installation notes
 - Install the go library ```go get github.com/takama/deamon```
@@ -64,8 +67,6 @@ I'm still developing (security related) and documenting the code. Updates to fol
 - Enhance security (enforce allowed paths only, non-root daemon)
 
 # Security notes
-<b>Use this deamon at your own risk! I'm still improving the code to prevent script attacks etc.</b>
-
-To ensure you are using all services safely, it is strongly recommended to apply Let's Encrypt (or similar) to the (whole) website and to enforce HTTPS in all cases. It's free and easy to setup!
+To ensure you are using all services safely, it is strongly recommended to install certificates with Let's Encrypt (or similar) to the (whole) website and to enforce HTTPS in all cases. It's free and easy to setup!
 
 For safety (and to prevent a lot of uninvited guests peeking in your logs) I strongly recommend to apply Basic Authentication (or similar) to the ```/_log``` (or your own configured path).
