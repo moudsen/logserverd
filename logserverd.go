@@ -48,6 +48,9 @@ func handleAccessLog(w http.ResponseWriter, req *http.Request) {
 		ip = req.Header.Get("X-Forwarded-For")
 	}
 	if ip == "" {
+		ip = req.Header.Get("x-forwarded-for")
+	}
+	if ip == "" {
 		ip = req.RemoteAddr
 	}
 
