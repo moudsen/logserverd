@@ -10,7 +10,7 @@ For coding on the server I use <em>ICEcoder</em> (check out https://icecoder.net
 The next challenge after phpMyAdmin and other tools besides the coding was to find an easy and secure way to access the webserver log files in the ```/var/log path```. After some tricks (remounting ```/var/log/httpd``` for example) I decided to go for a more structural and more clean option for which in my case I decided to use GOlang (multi platform/OS flavors, single binary).
 
 # Prerequisites
-- Commandline access (including root privileges, but also depends on access rights to ```/var/log``` as long as read-only right is granted)
+- Commandline access (including root privileges to install the daemon, but also depends on access rights to ```/var/log```: as long as read-only right is granted the daemon will work)
 - GO compiler (recent version)
 - For deamonizing the program I'm using a very nice and easy to use library from https://github.com/takama/deamon
 - Apache or NGINX logs are in a single logging directory (considering multi-path support at a later stage)
@@ -24,7 +24,7 @@ The next challenge after phpMyAdmin and other tools besides the coding was to fi
 - Auto refresh (default is off); ```&refresh=<seconds>```
 - Reverse date/time (default is oldest to newerst); ```&reverse=<0|1>```
 - Filter based on our client IP address (default is to show all entries); ```&filter="<0|1>```
-- Filter ```/_log``` and ```/_icecoder-alias```
+- Filter ```/_log``` and ```/_icecoder-alias``` (_coder)
 - Reverse proxy detection (correct source IP address for filtering the log file)
 
 (*) Site name characters may only contain a-z,0-9 or .-_ characters
@@ -37,6 +37,10 @@ The next challenge after phpMyAdmin and other tools besides the coding was to fi
 - Start the deamon with ```sudo logserverd start```
 
 The service is now ready and waiting on port 7000 ...
+
+The deamon also listens to stop or uninstall:
+- Stop the deamon with ```sudo logserverd stop```
+- Uninstall the deamon with ```sudo logserverd uninstall```
 
 # Apache log server configuration (recommended and secure setup)
 There are numerous examples on the internet how to setup access control for Apache and NGINX. I am using the following configuration for Apache to somehow secure the logging server access, but feel free to adapt according to your needs.
@@ -59,7 +63,7 @@ Configure the reverse proxy for Apache and protect the ```/_log directory``` (ad
 I'm assuming basic knowledge how to configure Apache and to create a passwd file. Hint: ```htpasswd -c /pathto/filename.passwd myusername```.
 
 # Notes
-I'm still developing (security related) and documenting the code. Updates to follow in the next weeks. If you want to use the current code, look for configurable items in the code before compiling/using.
+I'm still developing (security related) and documenting the code. If you want to use the current code, look for configurable items in the code before compiling/using (like the exclusion of _log and _coder log lines).
 
 # To-do
 - More configuraton of parameters/behaviour (port from command-line, ```/var/log/path/subdirectory```, fixate site)
@@ -67,6 +71,9 @@ I'm still developing (security related) and documenting the code. Updates to fol
 - Enhance security (enforce allowed paths only, non-root daemon)
 
 # Security notes
-To ensure you are using all services safely, it is strongly recommended to install certificates with Let's Encrypt (or similar) to the (whole) website and to enforce HTTPS in all cases. It's free and easy to setup!
+To ensure you are using all services safely, it is strongly recommended to install certificates with Let's Encrypt (or similar) to the (whole) website and to enforce HTTPS in all cases. It's free and easy to setup! (and prevents your username/password/coding, perhaps including sensitive information, going over the internet unencrypted ...)
 
 For safety (and to prevent a lot of uninvited guests peeking in your logs) I strongly recommend to apply Basic Authentication (or similar) to the ```/_log``` (or your own configured path).
+
+# Feedback
+Feel free to open an issue or to contact me directly at mark.oudsen@puzzl.nl (please put "[LOGSERVERD]" in the subject).
