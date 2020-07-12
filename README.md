@@ -7,7 +7,7 @@ For websites I use PHP as my primary development language. As I won't always hav
 ## My coding and debugging challenges
 For coding on the server I use <em>ICEcoder</em> (check out https://icecoder.net), a browser based code editor. I've yet to encounter an environment where this tool does not work ...!
 
-The next challenge after phpMyAdmin and other tools the coding was to find an easy and secure way to access the webserver log files in the ```/var/log path```. After some tricks (remounting ```/var/log/httpd``` for example) I decided to go for a more structural and more clean option for which in my case I decided to use GOlang (multi platform/OS flavors, single binary).
+The next challenge after phpMyAdmin and other tools besides the coding was to find an easy and secure way to access the webserver log files in the ```/var/log path```. After some tricks (remounting ```/var/log/httpd``` for example) I decided to go for a more structural and more clean option for which in my case I decided to use GOlang (multi platform/OS flavors, single binary).
 
 # Prerequisites
 - Commandline access (including root privileges, but also depends on access rights to ```/var/log``` as long as read-only right is granted)
